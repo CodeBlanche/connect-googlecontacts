@@ -357,11 +357,15 @@ class SyncFromLaposta extends AbstractCommand
         $this->laposta->setFieldMap($this->listMap->groupElements[$listId]->fields);
 
         if (!isset($this->listMap->groupElements[$listId]->contacts[$memberId])) {
+            /*
+             * Ignoring unconfirmed contacts not currently needed.
+             *
             if ($event['data.state'] === "unconfirmed") {
                 $this->logger->debug("Contact '{$event['data.email']}' is unconfirmed. Skipping");
 
                 return;
             }
+            */
 
             $contact         = $this->laposta->convertToContact($event['data']);
             $contact->groups = $this->resolveGroupId($contact->groups);
@@ -381,6 +385,9 @@ class SyncFromLaposta extends AbstractCommand
         if (isset($this->listMap->groupElements[$listId]) && isset($this->listMap->groupElements[$listId]->contacts[$memberId])) {
             $contactId = $this->listMap->groupElements[$listId]->contacts[$memberId];
 
+            /*
+             * Ignoring unconfirmed contacts not currently needed.
+             *
             if ($event['data.state'] === "unconfirmed") {
                 $contact         = $this->laposta->convertToContact($event['data']);
                 $contact->groups = new ArrayIterator();
@@ -391,6 +398,7 @@ class SyncFromLaposta extends AbstractCommand
 
                 return;
             }
+            */
 
             if ($event['event'] === 'subscribed') {
                 $this->google->addContactToGroup($contactId, $groupId);
