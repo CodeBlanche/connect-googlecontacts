@@ -374,7 +374,7 @@ class SyncFromLaposta extends AbstractCommand
                 "Adding contact to google with data: " . json_encode($contact->toArray(true))
             );
 
-            $this->google->addContact(null, $contact);
+            $this->google->addContact($groupId, $contact);
             $this->listMap->groupElements[$listId]->contacts[$memberId] = $contact->gId;
 
             $this->logger->notice(

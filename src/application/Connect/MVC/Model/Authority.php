@@ -77,11 +77,20 @@ class Authority extends Model
      * Get the clients return url
      *
      * @return string
+     * @throws \RuntimeException
      */
     public function getClientReturnUrl()
     {
         if (!($this->clientData instanceof ClientData)) {
             $this->loadClientData();
+        }
+
+        if (empty($this->clientData)) {
+            throw new RuntimeException("Client data not loaded for client '$this->clientToken'");
+        }
+
+        if (empty($this->clientData->returnUrl)) {
+            throw new RuntimeException("Client data does not contain a return url for client '$this->clientToken'");
         }
 
         return $this->clientData->returnUrl;
@@ -162,8 +171,12 @@ class Authority extends Model
      */
     protected function loadClientData()
     {
-        if ($this->clientData instanceof ClientData || empty($this->clientToken)) {
+        if ($this->clientData instanceof ClientData) {
             return $this;
+        }
+
+        if (empty($this->clientToken)) {
+            throw new RuntimeException('Unable to load client data. No client token available.');
         }
 
         /** @var $command LoadClientData */

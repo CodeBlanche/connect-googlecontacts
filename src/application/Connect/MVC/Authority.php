@@ -139,21 +139,18 @@ class Authority extends Controller
 
         try {
             $this->model->confirmAuthority($this->request->get('code'));
+
+            $returnUrl = $this->model->getClientReturnUrl();
         }
         catch (Exception $e) {
             $this->logger->error("{$e->getMessage()} on line '{$e->getLine()}' of '{$e->getFile()}'");
             $status = 'failed';
         }
 
-        $returnUrl = $this->model->getClientReturnUrl();
-
         if (!empty($returnUrl)) {
             $this->redirect($returnUrl . (strpos($returnUrl, '?') !== false ? '&' : '?') . 'status=' . $status);
         }
 
-
         return $this;
     }
 }
-
-
